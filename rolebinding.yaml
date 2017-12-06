@@ -1,0 +1,13 @@
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: wayarmy-role-binding
+  namespace: testrole
+subjects:
+- kind: User
+  name: wayarmy
+  apiGroup: ""
+roleRef:
+  kind: Role
+  name: wayarmy-role
+  apiGroup: ""
