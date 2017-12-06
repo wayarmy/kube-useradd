@@ -45,7 +45,7 @@ if [[ $(check_openssl_installed) != "openssl"  || $(check_kubectl_installed) != 
 fi
 
 
-if [[ $1 == "help" || $1 == "--help" || $1 == "-h" ]]
+if [[ $1 == "help" || $1 == "--help" || $1 == "-h"  || $1 == "" ]]
 	then
 	show_help
 	exit 1
@@ -151,10 +151,3 @@ EOF
 }
 
 generate_config_file
-
-
-
-
-
-
-
