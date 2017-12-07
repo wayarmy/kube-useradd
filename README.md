@@ -32,6 +32,12 @@ cd kube-useradd
 ```
 
 with $CACERT and $CAKEY are certificate and key on k8s's master node's pki (`ca.crt` and `ca.key`)
+
+- Grant roles to `existing user` on namespace (with non-exist namespace, namespace will be created)
+```
+./add-user.sh $USER $NAMESPACE
+```
+
 - You can find the ca.crt and ca.key manually:
 
 ***If you install k8s cluster by KOPS***

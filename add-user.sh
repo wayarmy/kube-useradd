@@ -45,20 +45,76 @@ if [[ $(check_openssl_installed) != "openssl"  || $(check_kubectl_installed) != 
 fi
 
 
-if [[ $1 == "help" || $1 == "--help" || $1 == "-h"  || $1 == "" ]]
+if [[ $1 == "help" || $1 == "--help" || $1 == "-h"  || $1 == ""  || $2 == "" ]]
 	then
 	show_help
 	exit 1
 fi
 
+check_user_exist () {
+	kubectl get rolebinding --all-namespaces | grep -v "NAMESPACE" | while read l
+	do
+		NS=$(echo $l | awk '{print $1}')
+		RB=$(echo $l | awk '{print $2}')
+		US=$(kubectl get rolebinding $RB -n $NS -o yaml | grep -C 2 -w "User" | grep name | awk -F ': ' '{print $2}')
+		if [[ $1 == $US ]]
+			then
+			echo "exist"
+			return
+		fi
+	done
+}
 
-echo "---------Generating namespace--------------------------"
 create_ns_if_not_exist () {
 	if [[ $(kubectl get ns | awk '{print $1}' | grep -w "$1") != $1 ]]
 		then
 		kubectl create ns $1
 	fi
 }
+
+if [[ $3 == "" ]]
+	then
+	if [[ $(check_user_exist $USER) = "exist" ]]
+		then
+		echo "The user is exists. This script will grant roles for this user"
+		create_ns_if_not_exist $NAMESPACE
+cat <<EOF | kubectl create -f -
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  namespace: $NAMESPACE
+  name: $USER-role
+rules:
+- apiGroups: ["", "extensions", "apps"]
+  resources: ["*"]
+  verbs: ["*"]
+EOF
+
+cat <<EOF | kubectl create -f -
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: $USER-role-binding
+  namespace: $NAMESPACE
+subjects:
+- kind: User
+  name: $USER
+  apiGroup: ""
+roleRef:
+  kind: Role
+  name: $USER-role
+  apiGroup: ""
+EOF
+		exit 0
+	else
+		echo "Cannot find user "$USER". Please specific certificate and key to create new user's key context"
+		echo "..."
+		echo "Read README for more information"
+		exit 1
+	fi
+fi
+
+echo "---------Generating namespace--------------------------"
 create_ns_if_not_exist $NAMESPACE
 
 echo "  "
