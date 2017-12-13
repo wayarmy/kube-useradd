@@ -1,3 +1,5 @@
+[![Power by Wayarmy](https://raw.githubusercontent.com/wayarmy/kube-useradd/master/Power%20By_%20Wayarmy%20(1).png)](http://rmosolgo.github.io/react-badges/)
+
 # Kubeneretes UserAdd
 
 > This script will help add new user and generate new config file for that user
