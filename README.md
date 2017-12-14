@@ -1,3 +1,5 @@
+[![Power by Wayarmy](img/pwby.png)](http://rmosolgo.github.io/react-badges/)
+[![From Coffee](img/coff.png)](http://rmosolgo.github.io/react-badges/)
 # Kubeneretes UserAdd
 
 > This script will help add new user and generate new config file for that user

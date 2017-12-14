@@ -66,9 +66,11 @@ check_user_exist () {
 }
 
 create_ns_if_not_exist () {
-	if [[ $(kubectl get ns | awk '{print $1}' | grep -w "$1") != $1 ]]
+	kubectl get ns | awk '{print $1}' | grep -v "NAME" | if grep -Fxq "$1"
 		then
-		kubectl create ns $1
+		echo "Namespace $1 exist"
+	else
+		kubectl create namespace $1
 	fi
 }
 
@@ -86,7 +88,7 @@ metadata:
   name: $USER-role
 rules:
 - apiGroups: ["", "extensions", "apps"]
-  resources: ["*"]
+  resources: ["deployment"]
   verbs: ["*"]
 EOF
 
@@ -143,7 +145,7 @@ metadata:
   name: $USER-role
 rules:
 - apiGroups: ["", "extensions", "apps"]
-  resources: ["*"]
+  resources: ["deployment"]
   verbs: ["*"]
 EOF
 
